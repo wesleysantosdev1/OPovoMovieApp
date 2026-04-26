@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-    FlatList,
-    TouchableOpacity,
-    ActivityIndicator,
-    StatusBar,
-} from 'react-native';
+import { FlatList, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native';
 import styled from 'styled-components/native';
 import { Heart, Trash2 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getImageUrl, ImageSizes } from '../../services/api';
 import { useFavorites } from '../../context/FavoritesContext';
 
-// ─── Styled ──────────────────────────────────────────────────────────────────
+// ─── Styled ──────
 
 const Root = styled.View`
     flex: 1;
@@ -174,13 +169,13 @@ const EmptySubtitle = styled.Text`
     line-height: 22px;
 `;
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ──────
 
 export default function FavoritesScreen({ navigation }) {
     const insets = useSafeAreaInsets();
     const { favorites, loading, removeFavorite  } = useFavorites();
 
-    // ── Renderização do card ──────────────────────────────────────────────────
+    // ── Renderização do card ───────
     const renderItem = ({ item }) => {
         const posterUrl = getImageUrl(item.poster_path, ImageSizes.poster.small);
         const rating = item.vote_average?.toFixed(1) ?? '—';

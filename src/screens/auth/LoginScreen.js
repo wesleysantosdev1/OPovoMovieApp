@@ -1,21 +1,11 @@
 import React, { useState, useRef } from 'react';
-import {
-    KeyboardAvoidingView,
-    Platform,
-    TouchableWithoutFeedback,
-    Keyboard,
-    ScrollView,
-    View,
-    ActivityIndicator,
-    Alert,
-    StatusBar,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView, View, ActivityIndicator, Alert, StatusBar, } from 'react-native';
 import styled from 'styled-components/native';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 
-// ─── Styled Components ──────────────────────────────────────────────────────
+// ─── Styled Components ──────────
 
 const Root = styled.View`
     flex: 1;
@@ -199,7 +189,7 @@ const LegalLink = styled.Text`
     text-decoration-line: underline;
 `;
 
-// ─── Component ──────────────────────────────────────────────────────────────
+// ─── Component ─────────────
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -239,131 +229,131 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <Root>
-        <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="light-content" />
 
-        {/* Backdrop cinematográfico */}
-        <BackdropImage
-            source={{ uri: 'https://image.tmdb.org/t/p/w780/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg' }}
-            resizeMode="cover"
-        />
+            {/* Backdrop cinematográfico */}
+            <BackdropImage
+                source={{ uri: 'https://image.tmdb.org/t/p/w780/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg' }}
+                resizeMode="cover"
+            />
 
-        {/* Gradiente overlay (simulado com LinearGradient ou View) */}
-        <View
-            style={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0,
-            height: 320,
-            background: 'transparent',
-            }}
-            pointerEvents="none"
-        />
+            {/* Gradiente overlay (simulado com LinearGradient ou View) */}
+            <View
+                style={{
+                position: 'absolute',
+                top: 0, left: 0, right: 0,
+                height: 320,
+                background: 'transparent',
+                }}
+                pointerEvents="none"
+            />
 
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={{ flex: 1 }}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <Inner>
-                        <LogoRow>
-                            <LogoBox>
-                            <LogoEmoji>🎬</LogoEmoji>
-                            </LogoBox>
-                            <LogoText>CINEMA</LogoText>
-                        </LogoRow>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                style={{ flex: 1 }}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <ScrollView
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <Inner>
+                            <LogoRow>
+                                <LogoBox>
+                                    <LogoEmoji>🎬</LogoEmoji>
+                                </LogoBox>
+                                <LogoText>CINEMA</LogoText>
+                            </LogoRow>
 
-                        <Headline>
-                            Filmes que{' '}
-                            <HeadlineAccent>marcam</HeadlineAccent>
-                            {'\n'}a vida.
-                        </Headline>
-                        <Subtitle>Bem-vindo de volta. Continue assistindo.</Subtitle>
+                            <Headline>
+                                Filmes que{' '}
+                                <HeadlineAccent>marcam</HeadlineAccent>
+                                {'\n'}a vida.
+                            </Headline>
+                            <Subtitle>Bem-vindo de volta. Continue assistindo.</Subtitle>
 
-                        <ToggleContainer>
-                            <ToggleBtn active={true}>
-                                <ToggleBtnText active={true}>Entrar</ToggleBtnText>
-                            </ToggleBtn>
+                            <ToggleContainer>
+                                <ToggleBtn active={true}>
+                                    <ToggleBtnText active={true}>Entrar</ToggleBtnText>
+                                </ToggleBtn>
 
-                            <ToggleBtn
-                            active={false}
-                            onPress={() => navigation.navigate('Register')}
-                            >
-                                <ToggleBtnText active={false}>Cadastrar</ToggleBtnText>
-                            </ToggleBtn>
-                        </ToggleContainer>
+                                <ToggleBtn
+                                active={false}
+                                onPress={() => navigation.navigate('Register')}
+                                >
+                                    <ToggleBtnText active={false}>Cadastrar</ToggleBtnText>
+                                </ToggleBtn>
+                            </ToggleContainer>
 
-                        <InputLabel>E-MAIL</InputLabel>
-                        <InputRow focused={emailFocused}>
-                            <Mail
-                                size={18}
-                                color={emailFocused ? '#E91E63' : '#5C6370'}
-                                strokeWidth={1.8}
-                            />
-                            <StyledInput
-                                placeholder="voce@cinema.com"
-                                placeholderTextColor="#5C6370"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                returnKeyType="next"
-                                value={email}
-                                onChangeText={setEmail}
-                                onFocus={() => setEmailFocused(true)}
-                                onBlur={() => setEmailFocused(false)}
-                                onSubmitEditing={() => passwordRef.current?.focus()}
-                            />
-                        </InputRow>
+                            <InputLabel>E-MAIL</InputLabel>
+                            <InputRow focused={emailFocused}>
+                                <Mail
+                                    size={18}
+                                    color={emailFocused ? '#E91E63' : '#5C6370'}
+                                    strokeWidth={1.8}
+                                />
+                                <StyledInput
+                                    placeholder="voce@cinema.com"
+                                    placeholderTextColor="#5C6370"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    returnKeyType="next"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    onFocus={() => setEmailFocused(true)}
+                                    onBlur={() => setEmailFocused(false)}
+                                    onSubmitEditing={() => passwordRef.current?.focus()}
+                                />
+                            </InputRow>
 
-                        <InputLabel>SENHA</InputLabel>
-                        <InputRow focused={passwordFocused}>
-                            <Lock
-                                size={18}
-                                color={passwordFocused ? '#E91E63' : '#5C6370'}
-                                strokeWidth={1.8}
-                            />
-                            <StyledInput
-                                ref={passwordRef}
-                                placeholder="Mínimo 6 caracteres"
-                                placeholderTextColor="#5C6370"
-                                secureTextEntry={!showPassword}
-                                returnKeyType="done"
-                                value={password}
-                                onChangeText={setPassword}
-                                onFocus={() => setPasswordFocused(true)}
-                                onBlur={() => setPasswordFocused(false)}
-                                onSubmitEditing={handleLogin}
-                            />
-                            <EyeBtn onPress={() => setShowPassword(v => !v)}>
-                                {showPassword
-                                    ? <Eye size={18} color="#5C6370" strokeWidth={1.8} />
-                                    : <EyeOff size={18} color="#5C6370" strokeWidth={1.8} />
+                            <InputLabel>SENHA</InputLabel>
+                            <InputRow focused={passwordFocused}>
+                                <Lock
+                                    size={18}
+                                    color={passwordFocused ? '#E91E63' : '#5C6370'}
+                                    strokeWidth={1.8}
+                                />
+                                <StyledInput
+                                    ref={passwordRef}
+                                    placeholder="Mínimo 6 caracteres"
+                                    placeholderTextColor="#5C6370"
+                                    secureTextEntry={!showPassword}
+                                    returnKeyType="done"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    onFocus={() => setPasswordFocused(true)}
+                                    onBlur={() => setPasswordFocused(false)}
+                                    onSubmitEditing={handleLogin}
+                                />
+                                <EyeBtn onPress={() => setShowPassword(v => !v)}>
+                                    {showPassword
+                                        ? <Eye size={18} color="#5C6370" strokeWidth={1.8} />
+                                        : <EyeOff size={18} color="#5C6370" strokeWidth={1.8} />
+                                    }
+                                </EyeBtn>
+                            </InputRow>
+
+                            <ForgotBtn>
+                                <ForgotText>Esqueci minha senha</ForgotText>
+                            </ForgotBtn>
+
+                            <PrimaryButton onPress={handleLogin} disabled={loading} activeOpacity={0.85}>
+                                {loading
+                                ? <ActivityIndicator color="#fff" />
+                                : <PrimaryButtonText>Entrar agora</PrimaryButtonText>
                                 }
-                            </EyeBtn>
-                        </InputRow>
+                            </PrimaryButton>
 
-                        <ForgotBtn>
-                            <ForgotText>Esqueci minha senha</ForgotText>
-                        </ForgotBtn>
-
-                        <PrimaryButton onPress={handleLogin} disabled={loading} activeOpacity={0.85}>
-                            {loading
-                            ? <ActivityIndicator color="#fff" />
-                            : <PrimaryButtonText>Entrar agora</PrimaryButtonText>
-                            }
-                        </PrimaryButton>
-
-                        <LegalText>
-                            Ao continuar, você concorda com os{' '}
-                            <LegalLink>Termos e Política de Privacidade</LegalLink>.
-                        </LegalText>
-                    </Inner>
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                            <LegalText>
+                                Ao continuar, você concorda com os{' '}
+                                <LegalLink>Termos e Política de Privacidade</LegalLink>.
+                            </LegalText>
+                        </Inner>
+                    </ScrollView>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </Root>
     );
 }

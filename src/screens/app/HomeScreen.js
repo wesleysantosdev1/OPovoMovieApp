@@ -14,7 +14,7 @@ const COL_GAP = 8;
 const H_PAD = 16;
 const CARD_WIDTH = (SCREEN_W - H_PAD * 2 - COL_GAP) / 2;
 
-// ─── Styled ─────────────────────────────────────────────────────────────────
+// ─── Styled ─────────
 
 const Root = styled.View`
     flex: 1;
@@ -109,7 +109,7 @@ const FooterLoader = styled.View`
     align-items: center;
 `;
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ──────────
 
 export default function HomeScreen({ navigation }) {
     const insets = useSafeAreaInsets();
@@ -128,7 +128,7 @@ export default function HomeScreen({ navigation }) {
     const searchTimer = useRef(null);
     const isSearchMode = query.trim().length > 0;
 
-    // ── Carrega populares ─────────────────────────────────────────────────────
+    // ── Carrega populares ─────────
     const fetchPopular = useCallback(async (pageNum = 1) => {
         try {
             if (pageNum === 1) setLoading(true);
@@ -152,7 +152,7 @@ export default function HomeScreen({ navigation }) {
         fetchPopular(1);
     }, [fetchPopular]);
 
-    // ── Busca por texto com debounce ──────────────────────────────────────────
+    // ── Busca por texto com debounce ─────────
     useEffect(() => {
         clearTimeout(searchTimer.current);
 
@@ -179,7 +179,7 @@ export default function HomeScreen({ navigation }) {
         return () => clearTimeout(searchTimer.current);
     }, [query]);
 
-    // ── Paginação (infinite scroll) ───────────────────────────────────────────
+    // ── Paginação (infinite scroll) ─────────────
     const handleEndReached = () => {
         if (isSearchMode || loadingMore || page >= totalPages) return;
         const next = page + 1;
@@ -187,7 +187,7 @@ export default function HomeScreen({ navigation }) {
         fetchPopular(next);
     };
 
-    // ── Renderização ─────────────────────────────────────────────────────────
+    // ── Renderização ────────────────
     const renderCard = useCallback(
         ({ item }) => (
             <MovieCard

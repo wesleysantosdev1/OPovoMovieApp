@@ -8,7 +8,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { useAuth } from '../../context/AuthContext';
 
-// ─── Styled ──────────────────────────────────────────────────────────────────
+// ─── Styled ──────────
 
 const Root = styled.View`
     flex: 1;
@@ -103,7 +103,7 @@ const AppVersion = styled.Text`
     letter-spacing: 0.5px;
 `;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────
 
 const getInitials = (name) => {
     if (!name) return '?';
@@ -112,7 +112,7 @@ const getInitials = (name) => {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ──────────
 
 export default function ProfileScreen() {
     const insets = useSafeAreaInsets();
@@ -149,7 +149,7 @@ export default function ProfileScreen() {
 
     return (
         <Root>
-        <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="light-content" />
 
             <Inner style={{ paddingTop: insets.top + 40 }}>
 
@@ -183,7 +183,7 @@ export default function ProfileScreen() {
                 </SignOutButton>
 
                 {/* Versão do app */}
-                <AppVersion>CINEMA · v1.0 · Protótipo visual</AppVersion>
+                <AppVersion>CINEMA · v1.0 </AppVersion>
             </Inner>
         </Root>
     );

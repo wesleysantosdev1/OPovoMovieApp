@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-    ScrollView,
-    Dimensions,
-    StatusBar,
-    ActivityIndicator,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { ScrollView, Dimensions, StatusBar, ActivityIndicator, TouchableOpacity, View, } from 'react-native';
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Star, Clock, Calendar, Heart } from 'lucide-react-native';
@@ -18,7 +11,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 const { width: W, height: H } = Dimensions.get('window');
 const BACKDROP_HEIGHT = H * 0.52;
 
-// ─── Styled ──────────────────────────────────────────────────────────────────
+// ─── Styled ─────────
 
 const Root = styled.View`
     flex: 1;
@@ -180,14 +173,14 @@ const FavButtonText = styled.Text`
         isFav ? theme.colors.primary : theme.colors.textOnPrimary};
 `;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────
 
 const fmt = {
-  duration: (m) => !m ? '—' : `${Math.floor(m / 60)}h ${m % 60}m`,
-  year: (d) => d?.substring(0, 4) ?? '—',
+    duration: (m) => !m ? '—' : `${Math.floor(m / 60)}h ${m % 60}m`,
+    year: (d) => d?.substring(0, 4) ?? '—',
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// ─── Component ─────────────
 
 export default function MovieDetailScreen({ route, navigation }) {
     const { movie: routeMovie } = route.params;
@@ -201,7 +194,7 @@ export default function MovieDetailScreen({ route, navigation }) {
         ImageSizes.backdrop.large
     );
 
-    // ── Carrega detalhes completos ────────────────────────────────────────────
+    // ── Carrega detalhes completos ──────
     useEffect(() => {
         const load = async () => {
             try {
@@ -214,16 +207,16 @@ export default function MovieDetailScreen({ route, navigation }) {
         load();
     }, [routeMovie.id]);
 
-    // ── Toggle favorito no Firestore ──────────────────────────────────────────
+    // ── Toggle favorito no Firestore ────────
     const handleToggle = async () => {
-      if (toggling) return;
-      setToggling(true);
-      try {
-          await toggleFavorite(movie);
-      } finally {
-          setToggling(false);
-      }
-  };
+        if (toggling) return;
+        setToggling(true);
+        try {
+            await toggleFavorite(movie);
+        } finally {
+            setToggling(false);
+        }
+    };
 
 
     const rating = movie?.vote_average?.toFixed(1) || '—';
@@ -233,10 +226,11 @@ export default function MovieDetailScreen({ route, navigation }) {
     const synopsis =
         movie?.overview ||
         'Sinopse não disponível para este título.';
+    const isFavorite = favIds.has(movie.id);
 
     return (
         <Root>
-        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
 

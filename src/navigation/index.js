@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Film, Heart, User } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { auth } from '../config/firebase';
 import theme from '../theme/theme';
@@ -43,6 +44,8 @@ function AuthNavigator() {
 
 // ─── Bottom Tabs ────────────────────────────────────────────────────────────
 function BottomTabs() {
+    const insets = useSafeAreaInsets();
+
     return (
         <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -51,8 +54,8 @@ function BottomTabs() {
                 backgroundColor: theme.colors.tabBarBackground,
                 borderTopColor: theme.colors.border,
                 borderTopWidth: 1,
-                height: 64,
-                paddingBottom: 10,
+                height: 60 + insets.bottom,
+                paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
                 paddingTop: 8,
             },
             tabBarActiveTintColor: theme.colors.tabBarActive,
@@ -84,21 +87,9 @@ function BottomTabs() {
             },
         })}
         >
-            <Tab.Screen
-                name="FilmesTab"
-                component={HomeScreen}
-                options={{ tabBarLabel: 'Filmes' }}
-            />
-            <Tab.Screen
-                name="FavoritosTab"
-                component={FavoritesScreen}
-                options={{ tabBarLabel: 'Favoritos' }}
-            />
-            <Tab.Screen
-                name="PerfilTab"
-                component={ProfileScreen}
-                options={{ tabBarLabel: 'Perfil' }}
-            />
+            <Tab.Screen name="FilmesTab" component={HomeScreen} options={{ tabBarLabel: 'Filmes' }} />
+            <Tab.Screen name="FavoritosTab" component={FavoritesScreen} options={{ tabBarLabel: 'Favoritos' }} />
+            <Tab.Screen name="PerfilTab" component={ProfileScreen} options={{ tabBarLabel: 'Perfil' }} />
         </Tab.Navigator>
     );
 }
@@ -113,9 +104,7 @@ function AppNavigator() {
             }}
         >
             <AppStack.Screen name="MainTabs" component={BottomTabs} />
-            <AppStack.Screen
-                name="MovieDetail"
-                component={MovieDetailScreen}
+            <AppStack.Screen name="MovieDetail" component={MovieDetailScreen}
                 options={{
                     animation: 'slide_from_bottom',
                     presentation: 'transparentModal',
