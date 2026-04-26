@@ -48,39 +48,39 @@ function BottomTabs() {
         screenOptions={({ route }) => ({
             headerShown: false,
             tabBarStyle: {
-            backgroundColor: theme.colors.tabBarBackground,
-            borderTopColor: theme.colors.border,
-            borderTopWidth: 1,
-            height: 64,
-            paddingBottom: 10,
-            paddingTop: 8,
+                backgroundColor: theme.colors.tabBarBackground,
+                borderTopColor: theme.colors.border,
+                borderTopWidth: 1,
+                height: 64,
+                paddingBottom: 10,
+                paddingTop: 8,
             },
             tabBarActiveTintColor: theme.colors.tabBarActive,
             tabBarInactiveTintColor: theme.colors.tabBarInactive,
             tabBarLabelStyle: {
-            fontSize: theme.typography.fontSize.xs,
-            fontFamily: theme.typography.fontFamily.bodyMedium,
-            marginTop: 2,
+                fontSize: theme.typography.fontSize.xs,
+                fontFamily: theme.typography.fontFamily.bodyMedium,
+                marginTop: 2,
             },
             tabBarIcon: ({ color, size, focused }) => {
-            const iconSize = focused ? size + 2 : size;
+                const iconSize = focused ? size + 2 : size;
 
-            if (route.name === 'FilmesTab') {
-                return <Film size={iconSize} color={color} strokeWidth={focused ? 2.5 : 1.8} />;
-            }
-            if (route.name === 'FavoritosTab') {
-                return (
-                    <Heart
-                        size={iconSize}
-                        color={color}
-                        strokeWidth={focused ? 2.5 : 1.8}
-                        fill={focused ? color : 'transparent'}
-                    />
-                );
-            }
-            if (route.name === 'PerfilTab') {
-                return <User size={iconSize} color={color} strokeWidth={focused ? 2.5 : 1.8} />;
-            }
+                if (route.name === 'FilmesTab') {
+                    return <Film size={iconSize} color={color} strokeWidth={focused ? 2.5 : 1.8} />;
+                }
+                if (route.name === 'FavoritosTab') {
+                    return (
+                        <Heart
+                            size={iconSize}
+                            color={color}
+                            strokeWidth={focused ? 2.5 : 1.8}
+                            fill={focused ? color : 'transparent'}
+                        />
+                    );
+                }
+                if (route.name === 'PerfilTab') {
+                    return <User size={iconSize} color={color} strokeWidth={focused ? 2.5 : 1.8} />;
+                }
             },
         })}
         >

@@ -8,11 +8,8 @@ import {
 import styled from 'styled-components/native';
 import { Heart, Trash2 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { onSnapshot, doc, updateDoc, arrayRemove } from 'firebase/firestore';
-
-import { db } from '../../config/firebase';
-import { useAuth } from '../../context/AuthContext';
 import { getImageUrl, ImageSizes } from '../../services/api';
+import { useFavorites } from '../../context/FavoritesContext';
 
 // ─── Styled ──────────────────────────────────────────────────────────────────
 
@@ -181,47 +178,13 @@ const EmptySubtitle = styled.Text`
 
 export default function FavoritesScreen({ navigation }) {
     const insets = useSafeAreaInsets();
-    const { user } = useAuth();
-
-    const [favorites, setFavorites] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    // ── Listener em tempo real do Firestore ───────────────────────────────────
-    useEffect(() => {
-        if (!user) return;
-
-        const userRef = doc(db, 'users', user.uid);
-        const unsub = onSnapshot(userRef, (snap) => {
-            if (snap.exists()) {
-                const favs = snap.data().favorites || [];
-                // Filtra apenas objetos válidos (ignora IDs avulsos)
-                setFavorites(favs.filter((f) => typeof f === 'object' && f.id));
-            } else {
-                setFavorites([]);
-            }
-            setLoading(false);
-        });
-
-        return unsub;
-    }, [user]);
-
-    // ── Remove favorito ───────────────────────────────────────────────────────
-    const handleRemove = async (movie) => {
-        if (!user) return;
-        try {
-            await updateDoc(doc(db, 'users', user.uid), {
-                favorites: arrayRemove(movie),
-            });
-        } catch (e) {
-            console.error('Erro ao remover favorito:', e);
-        }
-    };
+    const { favorites, loading, removeFavorite  } = useFavorites();
 
     // ── Renderização do card ──────────────────────────────────────────────────
     const renderItem = ({ item }) => {
         const posterUrl = getImageUrl(item.poster_path, ImageSizes.poster.small);
-        const rating = item.vote_average?.toFixed(1) || '—';
-        const year = item.release_date?.substring(0, 4) || '—';
+        const rating = item.vote_average?.toFixed(1) ?? '—';
+        const year = item.release_date?.substring(0, 4) ?? '—';
 
         return (
         <Card
@@ -250,7 +213,7 @@ export default function FavoritesScreen({ navigation }) {
                     </CardMetaLeft>
 
                     <RemoveBtn
-                        onPress={() => handleRemove(item)}
+                        onPress={() => removeFavorite(item.id)}
                         hitSlop={8}
                     >
                         <Heart size={18} color="#E91E63" fill="#E91E63" strokeWidth={2} />

@@ -11,17 +11,9 @@ import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Star, Clock, Calendar, Heart } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-    doc,
-    updateDoc,
-    arrayUnion,
-    arrayRemove,
-    getDoc,
-} from 'firebase/firestore';
 
 import { getMovieDetails, getImageUrl, ImageSizes } from '../../services/api';
-import { db } from '../../config/firebase';
-import { useAuth } from '../../context/AuthContext';
+import { useFavorites } from '../../context/FavoritesContext';
 
 const { width: W, height: H } = Dimensions.get('window');
 const BACKDROP_HEIGHT = H * 0.52;
@@ -190,28 +182,22 @@ const FavButtonText = styled.Text`
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const formatDuration = (minutes) => {
-    if (!minutes) return '—';
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+const fmt = {
+  duration: (m) => !m ? '—' : `${Math.floor(m / 60)}h ${m % 60}m`,
+  year: (d) => d?.substring(0, 4) ?? '—',
 };
-
-const formatYear = (dateStr) => dateStr?.substring(0, 4) || '—';
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function MovieDetailScreen({ route, navigation }) {
     const { movie: routeMovie } = route.params;
     const insets = useSafeAreaInsets();
-    const { user } = useAuth();
-
+    const { favIds, toggleFavorite } = useFavorites();
+    const [toggling, setToggling] = useState(false);
     const [movie, setMovie] = useState(routeMovie);
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [loadingFav, setLoadingFav] = useState(false);
 
     const backdropUrl = getImageUrl(
-        movie?.backdrop_path || movie?.poster_path,
+        movie?.backdrop_path ?? movie?.poster_path,
         ImageSizes.backdrop.large
     );
 
@@ -228,66 +214,21 @@ export default function MovieDetailScreen({ route, navigation }) {
         load();
     }, [routeMovie.id]);
 
-    // ── Verifica se já é favorito ─────────────────────────────────────────────
-    useEffect(() => {
-        if (!user) return;
-        const check = async () => {
-            try {
-                const snap = await getDoc(doc(db, 'users', user.uid));
-                if (snap.exists()) {
-                    const favs = snap.data().favorites || [];
-                    const ids = favs.map((f) => (typeof f === 'object' ? f.id : f));
-                    setIsFavorite(ids.includes(routeMovie.id));
-                }
-            } catch (e) {
-                console.error('Erro ao checar favorito:', e);
-            }
-        };
-        check();
-    }, [user, routeMovie.id]);
-
     // ── Toggle favorito no Firestore ──────────────────────────────────────────
-    const handleFavoriteToggle = useCallback(async () => {
-        if (!user || loadingFav) return;
-        setLoadingFav(true);
-
-        // Objeto limpo para salvar (sem campos desnecessários)
-        const moviePayload = {
-            id: movie.id,
-            title: movie.title,
-            poster_path: movie.poster_path,
-            backdrop_path: movie.backdrop_path,
-            vote_average: movie.vote_average,
-            release_date: movie.release_date,
-            overview: movie.overview,
-            runtime: movie.runtime,
-            genres: movie.genres?.map((g) => ({ id: g.id, name: g.name })) || [],
-        };
-
-        const userRef = doc(db, 'users', user.uid);
-        const newState = !isFavorite;
-
-        // Otimista
-        setIsFavorite(newState);
-
-        try {
-            await updateDoc(userRef, {
-                favorites: newState
-                ? arrayUnion(moviePayload)
-                : arrayRemove(moviePayload),
-            });
-        } catch (e) {
-            setIsFavorite(!newState); // reverte
-            console.error('Erro ao atualizar favorito:', e);
-        } finally {
-            setLoadingFav(false);
-        }
-    }, [user, movie, isFavorite, loadingFav]);
+    const handleToggle = async () => {
+      if (toggling) return;
+      setToggling(true);
+      try {
+          await toggleFavorite(movie);
+      } finally {
+          setToggling(false);
+      }
+  };
 
 
     const rating = movie?.vote_average?.toFixed(1) || '—';
-    const duration = formatDuration(movie?.runtime);
-    const year = formatYear(movie?.release_date);
+    const duration = fmt.duration(movie?.runtime);
+    const year = fmt.year(movie?.release_date);
     const genres = movie?.genres?.slice(0, 3) || [];
     const synopsis =
         movie?.overview ||
@@ -386,11 +327,11 @@ export default function MovieDetailScreen({ route, navigation }) {
                     {/* Botão de favoritar */}
                     <FavButton
                         isFav={isFavorite}
-                        onPress={handleFavoriteToggle}
-                        disabled={loadingFav}
+                        onPress={handleToggle}
+                        disabled={toggling}
                         activeOpacity={0.85}
                     >
-                        {loadingFav ? (
+                        {toggling  ? (
                             <ActivityIndicator color={isFavorite ? '#E91E63' : '#fff'} />
                             ) : (
                             <>

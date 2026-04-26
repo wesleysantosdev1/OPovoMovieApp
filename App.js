@@ -6,7 +6,7 @@ import { ThemeProvider } from 'styled-components/native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-import { DMSerifDisplay_400Regular, } from '@expo-google-fonts/dm-serif-display';
+import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 import {
   DMSans_400Regular,
   DMSans_500Medium,
@@ -16,6 +16,7 @@ import {
 import theme from './src/theme/theme';
 import RootNavigation from './src/navigation';
 import { AuthProvider } from './src/context/AuthContext';
+import { FavoritesProvider } from './src/context/FavoritesContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,18 +26,18 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        console.log("Carregando fontes...");
+        console.log('[App] Carregando fontes...');
         await Font.loadAsync({
           DMSerifDisplay_400Regular,
           DMSans_400Regular,
           DMSans_500Medium,
           DMSans_700Bold,
         });
-        console.log("Fontes carregadas!");
+        console.log('[App] ✅ Fontes carregadas.');
       } catch (e) {
-        console.warn('Falha ao carregar fontes:', e);
+          console.warn('[App] ⚠️ Falha nas fontes (usando fallback):', e.message);
       } finally {
-        setAppReady(true);
+          setAppReady(true);
       }
     }
     prepare();
@@ -44,11 +45,9 @@ export default function App() {
 
   useEffect(() => {
     if (appReady) {
-      const hide = async () => {
-        console.log("Escondendo a Splash Screen...");
-        await SplashScreen.hideAsync();
-      };
-      hide();
+      SplashScreen.hideAsync()
+        .then(() => console.log('[App] ✅ SplashScreen escondida.'))
+        .catch((e) => console.warn('[App] ⚠️ hideAsync:', e.message));
     }
   }, [appReady]);
 
@@ -58,10 +57,12 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <ThemeProvider theme={theme}>
-            <StatusBar style="light" backgroundColor={theme.colors.background} />
-            <RootNavigation />
-          </ThemeProvider>
+          <FavoritesProvider>
+            <ThemeProvider theme={theme}>
+              <StatusBar style="light" backgroundColor={theme.colors.background} />
+              <RootNavigation />
+            </ThemeProvider>
+          </FavoritesProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
